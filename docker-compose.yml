@@ -1,0 +1,17 @@
+version: '3.7'
+
+name: algorithms-workshop
+
+services:
+  notebooks:
+    image: algorithms-workshop-notebooks
+    ports:
+      - 8888:8888
+    build:
+      dockerfile: notebooks.Dockerfile
+    volumes:
+      - algorithms-workshop-notebooks:/algorithms-workshop
+    command: jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+
+volumes:
+  algorithms-workshop-notebooks:
