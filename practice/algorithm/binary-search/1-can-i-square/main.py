@@ -1,12 +1,3 @@
-
-
-def calculateWater(cols ,h):
-	sum=0
-	for c in cols:
-		if h > c:
-			sum += (h - c)
-	return sum
-
 def solve():
 	n = int(input())
 	total = sum(map(int, input().split(' ')), 0)

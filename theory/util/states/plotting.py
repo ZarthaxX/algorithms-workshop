@@ -1,45 +1,7 @@
+import util.states.graph
+
 from pyvis.network import Network
 import colorsys
-
-class StateInfo:
-    def __init__(self):
-        self._value = None
-        self._visits = 0
-
-    def incrementVisits(self):
-        self._visits += 1
-
-    def setValue(self, value):
-        self._value = value
-
-class StatesGraph:
-    def __init__(self):
-        self._states = dict()
-        self._stateTransitions = dict()
-
-    def addStateVisit(self, state):
-        if state not in self._states:
-            self._states[state] = StateInfo()
-            self._stateTransitions[state] = set()
-
-        self._states[state].incrementVisits()
-
-    def setStateValue(self, state, value):
-        self._states[state].setValue(value)
-
-    def addStateTransition(self, fromState, toState):
-        if fromState in self._states and toState in self._states:
-            self._stateTransitions[fromState].add(toState)
-            return
-
-        raise Exception()
-    
-    def getStateTransitions(self):
-        return [(f,t) for f, transitions in self._stateTransitions.items() for t in transitions]
-
-    def getStates(self):
-        return list(self._states.items())
-
 
 def trackStatesGraph(graph):
     def wrapFunc(f):
@@ -92,7 +54,7 @@ def drawTreeGraph(statesGraph, name):
         res = graph._states[args]
 
         # proportion = (res._visits - minVisits)/(maxVisits-minVisits+1)
-        # proportion = (res._visits - minVisits)/ res._visits
+        # proportion = (res._visits - minVisits)/ res._visitsstategraphstategraph
         # proportion = res._visits / totalVisits
         proportion = visitsRank[res._visits] / len(visitsRank)
         # e = 20
@@ -104,8 +66,19 @@ def drawTreeGraph(statesGraph, name):
                      color=getColor(proportion), 
                      level=depth,physics=False,
                      )
-        
-    addNodes(statesGraph, "20", 0)
+    
+    inEdges = dict()
+    for (f,t) in statesGraph.getStateTransitions():
+        if t not in inEdges:
+            inEdges[t] = 0
+        inEdges[t]+=1
+
+    rootState = None
+    for (state, edgeCnt) in inEdges:
+        if edgeCnt == 0:
+            rootState = state
+
+    addNodes(statesGraph, rootState, 0)
 
     for (f,t) in statesGraph.getStateTransitions():
         net.add_edge(f,t,physics=True, color='black')

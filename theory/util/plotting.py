@@ -2,44 +2,58 @@ import util.complexity
 import pandas as pd
 import matplotlib.pyplot as plt
 
+def setAsymptoticTable(axe, 
+                       y_axis_label, 
+                       x_axis_label, 
+                       funcSymbol,
+                        asymptoticSymbol):
+    axe.title.set_text(f"Algoritmo f({x_axis_label}) ∈ {asymptoticSymbol}({funcSymbol})")
+    axe.set_xlabel(x_axis_label)
+    axe.set_ylabel(y_axis_label)
+
+def setBigOTable(axes, y_axis_label, x_axis_label, funcSymbol):
+    setAsymptoticTable(axes[0], y_axis_label, x_axis_label, funcSymbol, "O")
+
+def setBigOmegaTable(axes, y_axis_label, x_axis_label, funcSymbol):
+    setAsymptoticTable(axes[1], y_axis_label, x_axis_label, funcSymbol, "Ω")
+
+def setBigThetaTable(axes, y_axis_label, x_axis_label, funcSymbol):
+    setAsymptoticTable(axes[2], y_axis_label, x_axis_label, funcSymbol, "Θ")
+
 def getFuncComplexityAnalysis(Ns, cases, realTimes, 
-                              worstFuncSymbol,worstFunc, 
-                              bestFuncSymbol, bestFunc, 
-                              avgFuncSymbol,avgFunc, 
-                              n_0 = 0):
-    worstCurve = util.complexity.fitWorstCaseCurve(cases, realTimes, worstFunc, n_0)
-    worstCurveDf = pd.DataFrame({
-        "Real time": realTimes,
-        f"c {worstFuncSymbol}": worstCurve,
+                              bigOFuncSymbol,bigOFunc, 
+                              bigOmegaFuncSymbol, bigOmegaFunc, 
+                              bigThetaFuncSymbol,bigThetaFunc, 
+                              n_0 = 0,
+                              y_axis_label = "tiempo (ms)",
+                              x_axis_label = "n"
+                             ):
+    bigOCurve = util.complexity.fitWorstCaseCurve(cases, realTimes, bigOFunc, n_0)
+    bigOCurveDf = pd.DataFrame({
+        f"f({x_axis_label})": realTimes,
+        f"C g({x_axis_label})": bigOCurve,
     }, index = Ns)
         
-    bestCurve = util.complexity.fitBestCaseCurve(cases, realTimes, bestFunc, n_0)
-    bestCurveDf = pd.DataFrame({
-        "Real time": realTimes,
-        f"c {bestFuncSymbol}": bestCurve,
+    bigOmegaCurve = util.complexity.fitBestCaseCurve(cases, realTimes, bigOmegaFunc, n_0)
+    bigOmegaCurveDf = pd.DataFrame({
+        f"f({x_axis_label})": realTimes,
+        f"C g({x_axis_label})": bigOmegaCurve,
     }, index = Ns)
 
-    avgCurves = util.complexity.fitAverageCaseCurves(cases, realTimes,avgFunc, n_0)
-    avgCurveDf = pd.DataFrame({
-        "Real time": realTimes,
-        f"c₁ {avgFuncSymbol}": avgCurves[0],
-        f"c₂ {avgFuncSymbol}": avgCurves[1],
+    bigThetaCurves = util.complexity.fitAverageCaseCurves(cases, realTimes,bigThetaFunc, n_0)
+    bigThetaCurveDf = pd.DataFrame({
+         f"f({x_axis_label})": realTimes,
+        f"C₁ g({x_axis_label})": bigThetaCurves[0],
+        f"C₂ g({x_axis_label})": bigThetaCurves[1],
     }, index = Ns)
-
 
     _, axes = plt.subplots(3, 1, figsize=(8, 15))
 
-    axes[0].title.set_text(f"Algorithm O({worstFuncSymbol})")
-    axes[0].set_xlabel("N")
-    axes[0].set_ylabel("time (ms)")
-    worstCurveDf.plot(ax=axes[0])
-    axes[1].title.set_text(f"Algorithm Ω({bestFuncSymbol})")
-    axes[1].set_xlabel("N")
-    axes[2].set_ylabel("time (ms)")
-    bestCurveDf.plot(ax=axes[1])
-    axes[2].title.set_text(f"Algorithm Θ({avgFuncSymbol})")
-    axes[2].set_xlabel("N")
-    axes[2].set_ylabel("time (ms)")
-    avgCurveDf.plot(ax=axes[2])
+    setBigOTable(axes, y_axis_label, x_axis_label, bigOFuncSymbol)
+    bigOCurveDf.plot(ax=axes[0])
+    setBigOmegaTable(axes, y_axis_label, x_axis_label, bigOmegaFuncSymbol)
+    bigOmegaCurveDf.plot(ax=axes[1])
+    setBigThetaTable(axes, y_axis_label, x_axis_label, bigThetaFuncSymbol)
+    bigThetaCurveDf.plot(ax=axes[2])
 
     plt.show()
