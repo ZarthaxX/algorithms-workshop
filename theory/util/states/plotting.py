@@ -33,8 +33,8 @@ def getColor(value):
     v = f'#{"{:02x}".format(int(r*255))}{"{:02x}".format(int(g*255))}{"{:02x}".format(int(b*255))}'
     return v
 
-def drawTreeGraph(statesGraph, name):
-    net = Network(layout="hierarchical",directed=True, height = "1000px", width = "1000px")
+def drawTreeGraph(statesGraph):
+    net = Network(notebook=True, cdn_resources='in_line', layout="hierarchical",directed=True, height = "1000px", width = "1000px")
     visits = ([s._visits for (_,s) in statesGraph.getStates()])
     maxVisits = max(visits)
     minVisits = min(visits)
@@ -66,7 +66,7 @@ def drawTreeGraph(statesGraph, name):
                      color=getColor(proportion), 
                      level=depth,physics=False,
                      )
-    
+        
     inEdges = dict()
     for (f,t) in statesGraph.getStateTransitions():
         if t not in inEdges:
@@ -74,8 +74,8 @@ def drawTreeGraph(statesGraph, name):
         inEdges[t]+=1
 
     rootState = None
-    for (state, edgeCnt) in inEdges:
-        if edgeCnt == 0:
+    for (state,_) in statesGraph.getStates():
+        if state not in inEdges:
             rootState = state
 
     addNodes(statesGraph, rootState, 0)
@@ -83,4 +83,4 @@ def drawTreeGraph(statesGraph, name):
     for (f,t) in statesGraph.getStateTransitions():
         net.add_edge(f,t,physics=True, color='black')
 
-    net.show(f"{name}.html")
+    return net

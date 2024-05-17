@@ -36,3 +36,4 @@ class StatesGraph:
 
     def getStates(self):
         return list(self._states.items())
+

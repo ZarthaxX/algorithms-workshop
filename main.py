@@ -1,9 +1,10 @@
+n,l = map(float, input().split(' '))
+a = list(map(float, input().split(' ')))
 
-def doSomething(a, b):
-    print(2*a, b + " world")
+a.sort()
 
-def func(f,*args):
-    f(*args)
-
-
-func(doSomething,3,"hello")
+best = max(a[0], l-a[-1])
+for i in range(len(a)-1):
+    best = max(best, (a[i+1]-a[i])/2)
+    
+print(best)
