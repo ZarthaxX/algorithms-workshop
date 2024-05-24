@@ -5,9 +5,9 @@ RUN apt-get update
 RUN apt-get install -y python3 &&\
     apt-get install -y python3-pip
 
-RUN pip3 install pandas matplotlib ipympl pyvis
+RUN pip3 install pandas matplotlib ipympl pyvis --break-system-packages
 
-RUN pip3 install notebook jupyterlab
+RUN pip3 install notebook jupyterlab --break-system-packages
 
 # Not recommended, but makes it easier to share python code between folders for the current use
 ENV PYTHONPATH="${PYTHONPATH}:/algorithms-workshop"
