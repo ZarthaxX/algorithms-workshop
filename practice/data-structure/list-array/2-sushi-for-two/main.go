@@ -8,7 +8,7 @@ func solve() {
 	var sushiCount int
 	fmt.Scan(&sushiCount)
 	pieces := make([]int, sushiCount)
-	for i, _ := range pieces {
+	for i := range pieces {
 		fmt.Scan(&pieces[i])
 	}
 
@@ -25,17 +25,13 @@ func solve() {
 
 	maxSubsegment := 0
 	for i := 0; i < len(compressed)-1; i++ {
-		min := compressed[i]
-		if compressed[i+1] < min {
-			min = compressed[i+1]
-		}
-
-		if 2*min > maxSubsegment {
-			maxSubsegment = 2 * min
-		}
+		maxSubsegment = max(
+			maxSubsegment,
+			min(compressed[i], compressed[i+1]),
+		)
 	}
 
-	fmt.Println(maxSubsegment)
+	fmt.Println(2 * maxSubsegment)
 }
 
 func main() {
