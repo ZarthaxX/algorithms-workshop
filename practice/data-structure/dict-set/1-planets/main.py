@@ -1,5 +1,5 @@
 def solve():
-    n,c = map(int, input().split(' '))
+    _,c = map(int, input().split(' '))
     planetsOrbit = list(map(int, input().split(' ')))
 
     planetsByOrbit = dict()
